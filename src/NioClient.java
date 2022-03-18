@@ -24,7 +24,7 @@ public class NioClient {
             while (true) {
                 System.out.println("Введите число n для последовательности чисел Фибоначчи...");
                 msg = scanner.nextLine().trim() + "\r\n";
-                if ("end".equals(msg)) break;
+                if (msg.trim().equals("end")) break;
 
                 socketChannel.write(
                         ByteBuffer.wrap(

@@ -42,21 +42,22 @@ public class NioServer {
                                 SocketChannel socketChannel = (SocketChannel) key.channel();
                                 ByteBuffer buffer = sockets.get(socketChannel);
                                 int bytesRead = socketChannel.read(buffer); // Reading, non-blocking call
-                                String clientIn = new String(buffer.array(), 0, bytesRead, UTF_8);
-                                int clientInNum = 0;
-                                try {
-                                    clientInNum = Integer.parseInt(clientIn.trim());
-                                } catch (NumberFormatException e) {
-                                    e.getStackTrace();
-                                }
-                                log("Reading from " + socketChannel.getRemoteAddress() + ", bytes read = " + bytesRead + ", client input: " +
-                                        clientInNum);
 
                                 // Detecting connection closed from client side
                                 if (bytesRead == -1) {
                                     log("Connection closed " + socketChannel.getRemoteAddress());
                                     sockets.remove(socketChannel);
                                     socketChannel.close();
+                                } else {
+                                    String clientIn = new String(buffer.array(), 0, bytesRead, UTF_8);
+                                    int clientInNum = 0;
+                                    try {
+                                        clientInNum = Integer.parseInt(clientIn.trim());
+                                    } catch (NumberFormatException e) {
+                                        e.getStackTrace();
+                                    }
+                                    log("Reading from " + socketChannel.getRemoteAddress() + ", bytes read = " + bytesRead + ", client input: " +
+                                            clientInNum);
                                 }
 
                                 // Detecting end of the message
