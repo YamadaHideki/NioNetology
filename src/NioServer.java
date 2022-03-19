@@ -50,14 +50,7 @@ public class NioServer {
                                     socketChannel.close();
                                 } else {
                                     String clientIn = new String(buffer.array(), 0, bytesRead, UTF_8);
-                                    int clientInNum = 0;
-                                    try {
-                                        clientInNum = Integer.parseInt(clientIn.trim());
-                                    } catch (NumberFormatException e) {
-                                        e.getStackTrace();
-                                    }
-                                    log("Reading from " + socketChannel.getRemoteAddress() + ", bytes read = " + bytesRead + ", client input: " +
-                                            clientInNum);
+                                    log("Reading from " + socketChannel.getRemoteAddress() + ", bytes read = " + bytesRead);
                                 }
 
                                 // Detecting end of the message
@@ -70,33 +63,15 @@ public class NioServer {
 
                                 // Reading client message from buffer
                                 buffer.flip();
-                                String clientMessage = new String(buffer.array(), buffer.position(), buffer.limit());
-                                int clientMessageNum = 0;
-                                try {
-                                    clientMessageNum = Integer.parseInt(clientMessage.trim());
-                                } catch (NumberFormatException e) {
-                                    e.getStackTrace();
-                                }
-                                // Building response
-                                StringBuilder sb = new StringBuilder();
-                                if (clientMessageNum > 0) {
-                                    for (int i = 0; i < clientMessageNum; i++) {
-                                        sb.append(fibonachiMap.get(i));
-                                        if ((i + 1) < clientMessageNum) {
-                                            sb.append(", ");
-                                        }
-                                    }
-                                } else {
-                                    sb.append("Введите корректное число...");
-                                }
+                                String clientMessage = new String(buffer.array(), buffer.position(), buffer.limit()).replace(" ", "");
 
                                 // Writing response to buffer
                                 buffer.clear();
-                                buffer.put(ByteBuffer.wrap(sb.toString().getBytes()));
+                                buffer.put(ByteBuffer.wrap(clientMessage.getBytes()));
                                 buffer.flip();
 
                                 int bytesWritten = socketChannel.write(buffer); // woun't always write anything
-                                log("Writing to " + socketChannel.getRemoteAddress() + ", bytes writteb = " + bytesWritten);
+                                log("Writing to " + socketChannel.getRemoteAddress() + ", bytes write = " + bytesWritten);
                                 if (!buffer.hasRemaining()) {
                                     buffer.compact();
                                     socketChannel.register(selector, SelectionKey.OP_READ);

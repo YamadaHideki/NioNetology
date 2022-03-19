@@ -22,7 +22,7 @@ public class NioClient {
 
             String msg;
             while (true) {
-                System.out.println("Введите число n для последовательности чисел Фибоначчи...");
+                System.out.println("Введите строку с пробелами...");
                 msg = scanner.nextLine().trim() + "\r\n";
                 if (msg.trim().equals("end")) break;
 
